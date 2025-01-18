@@ -64,17 +64,20 @@ class Behaviour(Thread):
         return self.params["stop"]
     
     def delivered_box(self):
+        print(f"----> event: Delivered box {self.get_current_box()}")
         self.params["delivered_boxes"].add(self.get_current_box())
         self.params["current_box_id"] = None
         self.params["carrying_box"] = False
     
     def set_tracked_box(self, box_id):
+        print(f"----> event: Tracking box {box_id}")
         self.params["current_box_id"] = box_id
 
     def get_current_box(self):
         return self.params.get("current_box_id", None)
     
     def set_carrying_box(self):
+        print(f"----> event: Picked box {self.get_current_box()}")
         self.params["carrying_box"] = True
 
     def carrying_box(self):

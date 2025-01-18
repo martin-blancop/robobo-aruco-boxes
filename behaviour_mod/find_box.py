@@ -12,7 +12,23 @@ class FindBoxes(Behaviour):
         return not self.supress
 
 
-    def turn(self):
+    def follow_wall(self):
+        ir_measurement_c = self.robot.readIRSensor(IR.FrontC)
+        ir_measurement_ll = self.robot.readIRSensor(IR.FrontLL)
+
+        # print(f'ir measumernts RR: {ir_measurement_rr}, R: {ir_measurement_r}, C: {ir_measurement_c}, L: {ir_measurement_l}, LL: {ir_measurement_ll}')
+
+        if ir_measurement_ll > 10 or ir_measurement_c > 10:
+            self.go_right()
+        else:
+            self.go_left()
+
+
+    def go_right(self):
+        self.robot.moveWheels(self.speed/2, self.speed)
+
+
+    def go_left(self):
         self.robot.moveWheels(self.speed, self.speed/2)
 
 
@@ -21,7 +37,7 @@ class FindBoxes(Behaviour):
         self.supress = False
 
         while (not self.supress):
-            self.turn()
+            self.follow_wall()
             self.robot.wait(0.1)
 
         self.robot.stopMotors()

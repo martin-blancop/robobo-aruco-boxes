@@ -24,7 +24,6 @@ class PickBox(Behaviour):
 
     def picked_box(self):
         if(self.robot.readIRSensor(IR.FrontC) <= self.proximity_threshold):
-            print("Picked box")
             self.set_carrying_box()
 
 

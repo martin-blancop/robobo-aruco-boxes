@@ -6,7 +6,9 @@ class DeliverBox(Behaviour):
         super().__init__(robot, videoStream, supress_list, params)
 
         self.speed = 2
-        self.proximity_threshold = 40
+        self.proximity_threshold = 20
+        self.stopping_threshold = 50
+        self.size_threshold = 50
         self.bay_to_aruco_relation = params.get('bay_aruco', {})
 
 
@@ -19,7 +21,7 @@ class DeliverBox(Behaviour):
 
 
     def take_control(self):
-        return not self.supress and self.bay_in_view() and self.carrying_box() and self.distance_below_threshold()
+        return not self.supress and self.bay_in_view() and self.carrying_box() and self.distance_below_threshold() and self.aruco_close()
         
 
     def bay_in_view(self):
@@ -31,7 +33,26 @@ class DeliverBox(Behaviour):
 
 
     def distance_below_threshold(self):
-        return self.robot.readIRSensor(IR.FrontC) > self.proximity_threshold
+        front_sensor = self.robot.readIRSensor(IR.FrontC)
+        right_sensor = self.robot.readIRSensor(IR.FrontRR)
+        left_sensor = self.robot.readIRSensor(IR.FrontLL)
+
+        return front_sensor > self.proximity_threshold or right_sensor > self.proximity_threshold or left_sensor > self.proximity_threshold
+
+
+    def aruco_close(self):
+        aruco = self.robot.readArucoTag()
+
+        if aruco is not None:
+            cor1 = aruco.cor1
+            cor2 = aruco.cor2
+
+            box_size = abs(cor2['x'] - cor1['x'])
+
+            return box_size > self.size_threshold
+        
+        else:
+            return False
 
 
     def go_straight(self):
@@ -39,7 +60,11 @@ class DeliverBox(Behaviour):
 
     
     def finished_delivering(self):
-        return self.robot.readIRSensor(IR.FrontC) > self.stopping_threshold
+        front_sensor = self.robot.readIRSensor(IR.FrontC)
+        right_sensor = self.robot.readIRSensor(IR.FrontRR)
+        left_sensor = self.robot.readIRSensor(IR.FrontLL)
+
+        return front_sensor > self.stopping_threshold or right_sensor > self.stopping_threshold or left_sensor > self.stopping_threshold
 
 
     def action(self):
@@ -48,7 +73,7 @@ class DeliverBox(Behaviour):
         self.supress = False
         self.suppress_behaviors()
 
-        while (not self.supress) and (self.distance_below_threshold()):
+        while (not self.supress) and (self.distance_below_threshold()) and (not self.finished_delivering()):
             self.go_straight()
             self.robot.wait(0.1)
 
