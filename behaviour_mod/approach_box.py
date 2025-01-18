@@ -1,11 +1,10 @@
 from behaviour_mod.behaviour import Behaviour
 from robobopy.utils.IR import IR
 from robobopy.utils.Sounds import Sounds
-import cv2
 
 class ApproachBox(Behaviour):
-    def __init__(self, robot, videoStream, supress_list, params):
-        super().__init__(robot, videoStream, supress_list, params)
+    def __init__(self, robot, supress_list, params):
+        super().__init__(robot, supress_list, params)
 
         self.speed = 12
 
@@ -102,6 +101,5 @@ class ApproachBox(Behaviour):
         self.suppress_behaviors()
         
         while (not self.supress):
-            cv2_image = self.videoStream.getImage()
             self.turn_towards_box()
             self.robot.wait(0.1)

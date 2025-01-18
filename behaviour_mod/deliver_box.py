@@ -2,8 +2,8 @@ from behaviour_mod.behaviour import Behaviour
 from robobopy.utils.IR import IR
 
 class DeliverBox(Behaviour):
-    def __init__(self, robot, videoStream, supress_list, params):
-        super().__init__(robot, videoStream, supress_list, params)
+    def __init__(self, robot, supress_list, params):
+        super().__init__(robot, supress_list, params)
 
         self.speed = 5
         self.proximity_threshold = 20

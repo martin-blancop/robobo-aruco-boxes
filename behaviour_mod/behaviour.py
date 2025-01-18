@@ -7,11 +7,10 @@ from threading import Thread
 import time
 
 class Behaviour(Thread):
-    def __init__(self, robot, videoStream, supress_list, params, **kwargs):
+    def __init__(self, robot, supress_list, params, **kwargs):
         # Initialize the Behavior class, inheriting from Thread
         super().__init__(**kwargs)
         self.robot = robot  # Reference to the robot object
-        self.videoStream = videoStream # Reference to the video stream object
         self.__supress = False  # Internal flag for suppression
         self.supress_list = supress_list  # List of behaviors this one can suppress
         self.params = params  # Shared parameters (e.g., mission control)

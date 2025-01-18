@@ -1,5 +1,4 @@
 from robobopy.Robobo import Robobo
-from robobopy_videostream.RoboboVideo import RoboboVideo
 
 from behaviour_mod.find_box import FindBoxes
 from behaviour_mod.approach_box import ApproachBox
@@ -15,10 +14,6 @@ def main():
     robobo.connect()
     robobo.moveTiltTo(90,5)
 
-    videoStream = RoboboVideo("localhost")  
-    videoStream.connect() 
-    robobo.startStream()
-
     params = {
         "stop": False,
         "bay_aruco": {
@@ -33,12 +28,13 @@ def main():
     }
 
     robobo.startArUcoTagDetection()
-    find_boxes_behaviour = FindBoxes(robobo, videoStream, [], params)
-    approach_box_behaviour = ApproachBox(robobo, videoStream, [find_boxes_behaviour], params)
-    pick_box_behaviour = PickBox(robobo, videoStream, [find_boxes_behaviour, approach_box_behaviour], params)
-    find_bay_behaviour = FindBay(robobo, videoStream, [find_boxes_behaviour, approach_box_behaviour, pick_box_behaviour], params)
-    approach_bay_behaviour = ApproachBay(robobo, videoStream, [find_boxes_behaviour, approach_box_behaviour, pick_box_behaviour, find_bay_behaviour], params)
-    deliver_box_behaviour = DeliverBox(robobo, videoStream, [find_boxes_behaviour, approach_box_behaviour, pick_box_behaviour, find_bay_behaviour, approach_bay_behaviour], params)
+
+    find_boxes_behaviour = FindBoxes(robobo, [], params)
+    approach_box_behaviour = ApproachBox(robobo, [find_boxes_behaviour], params)
+    pick_box_behaviour = PickBox(robobo, [find_boxes_behaviour, approach_box_behaviour], params)
+    find_bay_behaviour = FindBay(robobo, [find_boxes_behaviour, approach_box_behaviour, pick_box_behaviour], params)
+    approach_bay_behaviour = ApproachBay(robobo, [find_boxes_behaviour, approach_box_behaviour, pick_box_behaviour, find_bay_behaviour], params)
+    deliver_box_behaviour = DeliverBox(robobo, [find_boxes_behaviour, approach_box_behaviour, pick_box_behaviour, find_bay_behaviour, approach_bay_behaviour], params)
 
     threads = [find_boxes_behaviour, approach_box_behaviour, pick_box_behaviour, find_bay_behaviour, approach_bay_behaviour, deliver_box_behaviour]
 
