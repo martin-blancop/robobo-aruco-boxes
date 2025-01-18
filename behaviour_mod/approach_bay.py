@@ -5,7 +5,7 @@ class ApproachBay(Behaviour):
     def __init__(self, robot, videoStream, supress_list, params):
         super().__init__(robot, videoStream, supress_list, params)
 
-        self.speed = 5
+        self.speed = 12
 
         self.image_width = 480
         self.image_height = 640

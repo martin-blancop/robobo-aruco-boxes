@@ -5,7 +5,7 @@ class PickBox(Behaviour):
     def __init__(self, robot, videoStream, supress_list, params):
         super().__init__(robot, videoStream, supress_list, params)
 
-        self.speed = 2
+        self.speed = 4
         self.proximity_threshold = 60
         self.picked_box_threshold = 30
 

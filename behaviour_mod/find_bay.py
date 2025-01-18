@@ -5,7 +5,7 @@ class FindBay(Behaviour):
     def __init__(self, robot, videoStream, supress_list, params):
         super().__init__(robot, videoStream, supress_list, params)
 
-        self.speed = 8
+        self.speed = 12
 
         self.Kp = 0.4
         self.Ki = 0.0

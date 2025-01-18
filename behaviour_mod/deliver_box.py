@@ -5,7 +5,7 @@ class DeliverBox(Behaviour):
     def __init__(self, robot, videoStream, supress_list, params):
         super().__init__(robot, videoStream, supress_list, params)
 
-        self.speed = 2
+        self.speed = 5
         self.proximity_threshold = 20
         self.stopping_threshold = 50
         self.size_threshold = 50
