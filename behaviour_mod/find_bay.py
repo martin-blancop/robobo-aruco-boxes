@@ -7,6 +7,17 @@ class FindBay(Behaviour):
 
         self.speed = 8
 
+        self.Kp = 0.4
+        self.Ki = 0.0
+        self.Kd = 0.0
+
+        self.setpoint = 10
+
+        self.prev_error = 0.0
+        self.integral = 0.0
+
+        self.dt = 0.1
+
 
     def take_control(self):
         return not self.supress and self.carrying_box()
@@ -17,24 +28,23 @@ class FindBay(Behaviour):
             bh.supress = True
 
 
-    def follow_wall(self):
-        ir_measurement_c = self.robot.readIRSensor(IR.FrontC)
-        ir_measurement_ll = self.robot.readIRSensor(IR.FrontLL)
+    def follow_wall_pid(self):
+        measurement = self.robot.readIRSensor(IR.FrontLL)
 
-        # print(f'ir measumernts RR: {ir_measurement_rr}, R: {ir_measurement_r}, C: {ir_measurement_c}, L: {ir_measurement_l}, LL: {ir_measurement_ll}')
+        error = self.setpoint - measurement
 
-        if ir_measurement_ll > 10 or ir_measurement_c > 10:
-            self.go_right()
-        else:
-            self.go_left()
+        self.integral += error * self.dt
+        
+        derivative = (error - self.prev_error) / self.dt
 
+        output = (self.Kp * error) + (self.Ki * self.integral) + (self.Kd * derivative)
 
-    def go_right(self):
-        self.robot.moveWheels(self.speed/2, self.speed)
+        left_speed = self.speed + output
+        right_speed = self.speed - output
 
+        self.robot.moveWheels(left_speed, right_speed)
 
-    def go_left(self):
-        self.robot.moveWheels(self.speed, self.speed/2)
+        self.prev_error = error
 
 
     def action(self):
@@ -45,7 +55,7 @@ class FindBay(Behaviour):
         self.robot.movePanTo(-20, 40)
 
         while (not self.supress):
-            self.follow_wall()
+            self.follow_wall_pid()
             self.robot.wait(0.1)
 
         self.robot.stopMotors()

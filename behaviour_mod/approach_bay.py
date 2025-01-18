@@ -99,6 +99,8 @@ class ApproachBay(Behaviour):
     def action(self):
         print("----> control: ApproachBay")
 
+        self.robot.movePanTo(0, 40)
+
         self.supress = False
         self.suppress_behaviors()
         
